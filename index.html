@@ -178,7 +178,14 @@ const COLORS = {BiemmeFinestre:'#2d7d46',Internorm:'#0d2b52',Ditec:'#b0306a',Nov
 const SHORT = {BiemmeFinestre:'BI',Internorm:'IN',Ditec:'DT',Novoferm:'NV',FerreroLegno:'FE',
   Gerflor:'GF',Cherubini:'CH','CH-Mimetal':'MM',RotoFinestreTetti:'RO',NavelloInfissi:'NV'};
 
-let ncData = JSON.parse(localStorage.getItem('ellesse_nc') || '[]');
+// Dati iniziali pre-caricati (prime NC)
+const DATI_INIZIALI = [
+  {"id":1,"data":"2026-08-26","partner":"Cascino Angelo & C. Srl","mandante":"Internorm","oggetto":"Giunti a 45° aperti con anima esposta e difetti assemblaggio","commessa":"Rif. Lo Vetro","gravita":"Alta","stato":"Aperta","note":"Contestazione qualitativa. Incontro con Sig. Cascino in data odierna: hanno convenuto rifacimento completo commessa in toto. Mail inviata a Mattia Chizzola (Internorm) per attivazione.","creato":"2026-08-26"},
+  {"id":2,"data":"2026-08-26","partner":"Bruno Ceramiche Srl","mandante":"Internorm","oggetto":"Giunti a 45° e a T difettosi su serramenti","commessa":"","gravita":"Alta","stato":"Aperta","note":"Documentazione fotografica (16 foto) prodotta. Report NC creato. Da verificare spettanza fabbrica vs posa.","creato":"2026-08-26"}
+];
+
+let ncData = JSON.parse(localStorage.getItem('ellesse_nc') || 'null') || DATI_INIZIALI;
+let idCounter = ncData.length + 1;
 let idxVista = null;
 
 function init() {
@@ -195,8 +202,7 @@ function salva() {
 }
 
 function getNextId() {
-  if (ncData.length === 0) return 1;
-  return Math.max(...ncData.map(n => n.id)) + 1;
+  return idCounter++;
 }
 
 function nuovaNC() {
