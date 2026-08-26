@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM Non Conformità — Ellesse Rappresentanze</title>
+<style>
+:root{--blue:#0d2b52;--accent:#146ff8;--gold:#d4a843;--red:#cb3b3b;--green:#1fae5f;--gray:#5a6472;--bg:#f0f3f7;--card:#fff;--border:#d4dae3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:#1a1f2e;font-size:14px;line-height:1.5;padding:16px}
+.container{max-width:1200px;margin:0 auto}
+h1{font-size:22px;color:var(--blue);margin-bottom:2px}
+.sub{color:var(--gray);font-size:13px;margin-bottom:16px;border-bottom:2px solid var(--accent);padding-bottom:8px}
+.card{background:var(--card);border-radius:10px;padding:16px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);border:1px solid var(--border)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.stat{text-align:center;padding:14px}
+.stat .num{font-size:28px;font-weight:800;color:var(--accent)}
+.stat .lbl{font-size:11px;color:var(--gray);margin-top:2px}
+.stat .num.gold{color:var(--gold)}
+.stat .num.red{color:var(--red)}
+.stat .num.green{color:var(--green)}
+label{display:block;font-size:12px;font-weight:600;color:var(--blue);margin:8px 0 2px}
+input,textarea,select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(20,111,248,.15)}
+textarea{resize:vertical;min-height:50px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#0d5ad0;transform:translateY(-1px)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{background:#a82e2e}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-gold:hover{background:#be9436}
+.btn-sm{padding:5px 12px;font-size:11px}
+.actions{display:flex;gap:8px;margin:10px 0 0;flex-wrap:wrap}
+.filtri{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.filtri select,.filtri input{max-width:200px;padding:6px 10px;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--blue);color:#fff;padding:7px 8px;text-align:left;font-weight:600;white-space:nowrap}
+td{padding:6px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:#f4f7fc}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;color:#fff}
+.badge-alta{background:var(--red)}
+.badge-media{background:#e67e22}
+.badge-bassa{background:var(--green)}
+.badge-aperto{background:var(--accent)}
+.badge-inlavorazione{background:#e67e22}
+.badge-chiuso{background:var(--gray)}
+.mandante-tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;margin:1px;color:#fff}
+.mandante-tag.mt-biemme{background:#2d7d46}
+.mandante-tag.mt-internorm{background:#0d2b52}
+.mandante-tag.mt-ditec{background:#b0306a}
+.mandante-tag.mt-novoferm{background:#b8860b}
+.mandante-tag.mt-ferrero{background:#7a4a1a}
+.mandante-tag.mt-gerflor{background:#1a6e9b}
+.mandante-tag.mt-cherubini{background:#b3253a}
+.mandante-tag.mt-chmimetal{background:#4a4a6a}
+.mandante-tag.mt-roto{background:#3b7d5e}
+.mandante-tag.mt-navello{background:#6b3a7a}
+.mt-altro{background:var(--gray)}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.detail-grid .item{font-size:12px}
+.detail-grid .item strong{color:var(--blue)}
+.empty{text-align:center;color:var(--gray);padding:40px 20px;font-size:13px}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:1000}
+.modal-content{background:#fff;border-radius:14px;padding:24px;max-width:600px;width:90%;max-height:85vh;overflow-y:auto}
+.modal h2{color:var(--blue);margin-bottom:10px;font-size:17px}
+.modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.close{float:right;cursor:pointer;font-size:22px;color:var(--gray);line-height:1}
+@media(max-width:600px){.grid,.form-row,.detail-grid{grid-template-columns:1fr}.filtri select,.filtri input{max-width:100%}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>📋 CRM Non Conformità</h1>
+<div class="sub">Ellesse Rappresentanze · Lelio Silipigni · Gestione reclami e difetti</div>
+
+<div class="grid">
+  <div class="card stat"><div class="num" id="statTot">0</div><div class="lbl">Totale non conformità</div></div>
+  <div class="card stat"><div class="num red" id="statAperte">0</div><div class="lbl">Aperte</div></div>
+  <div class="card stat"><div class="num gold" id="statLavorazione">0</div><div class="lbl">In lavorazione</div></div>
+  <div class="card stat"><div class="num green" id="statChiuse">0</div><div class="lbl">Chiuse</div></div>
+</div>
+
+<div class="actions">
+  <button class="btn btn-primary" onclick="nuovaNC()">➕ Nuova Non Conformità</button>
+  <button class="btn btn-gold" onclick="esportaCSV()">📥 Esporta CSV</button>
+  <button class="btn btn-sm" style="background:var(--gray);color:#fff" onclick="importaCSV()">📤 Importa CSV</button>
+</div>
+
+<div class="filtri">
+  <select id="filtroStato" onchange="renderTable()">
+    <option value="">Tutti gli stati</option>
+    <option value="Aperta">🟡 Aperta</option>
+    <option value="In lavorazione">🟠 In lavorazione</option>
+    <option value="Chiusa">🟢 Chiusa</option>
+  </select>
+  <select id="filtroMandante" onchange="renderTable()"><option value="">Tutti i mandanti</option></select>
+  <select id="filtroGravita" onchange="renderTable()">
+    <option value="">Tutte le gravità</option>
+    <option value="Alta">🔴 Alta</option>
+    <option value="Media">🟠 Media</option>
+    <option value="Bassa">🟢 Bassa</option>
+  </select>
+  <input type="text" id="filtroTesto" placeholder="🔍 Cerca..." oninput="renderTable()" style="flex:1;min-width:150px">
+</div>
+
+<div class="card" style="padding:0;overflow-x:auto">
+<table id="tabella">
+  <thead><tr>
+    <th style="width:40px">#</th>
+    <th style="width:120px">Data</th>
+    <th>Partner</th>
+    <th>Mandante</th>
+    <th>Oggetto</th>
+    <th style="width:80px">Gravità</th>
+    <th style="width:90px">Stato</th>
+    <th style="width:70px">Azioni</th>
+  </tr></thead>
+  <tbody id="tbody"></tbody>
+</table>
+<div id="empty" class="empty" style="display:none">📭 Nessuna non conformità trovata</div>
+</div>
+
+</div>
+
+<div id="modale" class="modal" style="display:none" onclick="if(event.target===this)chiudiModale()">
+  <div class="modal-content">
+    <span class="close" onclick="chiudiModale()">&times;</span>
+    <h2 id="modalTitle">Nuova Non Conformità</h2>
+    <input type="hidden" id="editId">
+    <label>Partner (cliente)</label>
+    <input type="text" id="fPartner" placeholder="es. Bruno Ceramiche Srl" list="partnerList">
+    <datalist id="partnerList"></datalist>
+    <label>Mandante</label>
+    <select id="fMandante"></select>
+    <label>Oggetto / Descrizione</label>
+    <textarea id="fOggetto" placeholder="Descrizione del difetto / non conformità..." rows="3"></textarea>
+    <label>Commessa / Rif. ordine</label>
+    <input type="text" id="fCommessa" placeholder="es. Rif. Lo Vetro">
+    <div class="form-row">
+      <div><label>Gravità</label><select id="fGravita"><option value="Alta">🔴 Alta</option><option value="Media">🟠 Media</option><option value="Bassa">🟢 Bassa</option></select></div>
+      <div><label>Stato</label><select id="fStato"><option value="Aperta">🟡 Aperta</option><option value="In lavorazione">🟠 In lavorazione</option><option value="Chiusa">🟢 Chiusa</option></select></div>
+    </div>
+    <label>Note / Azioni intraprese</label>
+    <textarea id="fNote" placeholder="Azioni correttive, contatti, scadenze..." rows="2"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-sm" style="background:var(--gray);color:#fff" onclick="chiudiModale()">Annulla</button>
+      <button class="btn btn-primary" onclick="salvaNC()">💾 Salva</button>
+    </div>
+  </div>
+</div>
+
+<div id="modaleDettaglio" class="modal" style="display:none" onclick="if(event.target===this)chiudiDettaglio()">
+  <div class="modal-content">
+    <span class="close" onclick="chiudiDettaglio()">&times;</span>
+    <h2 id="detTitle">Dettaglio Non Conformità</h2>
+    <div id="detBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary btn-sm" id="detBtnModifica" onclick="modificaDaDettaglio()">✏️ Modifica</button>
+      <button class="btn btn-danger btn-sm" id="detBtnElimina" onclick="eliminaDaDettaglio()">🗑️ Elimina</button>
+      <button class="btn btn-sm" style="background:var(--gray);color:#fff" onclick="chiudiDettaglio()">Chiudi</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept=".csv" style="display:none" onchange="caricaCSV(event)">
+
+<script>
+const MANDANTI = [
+  'Biemme Finestre','Internorm','Ditec','Novoferm','Ferrero Legno',
+  'Gerflor','Cherubini','CH-Mimetal','Roto Finestre Tetti','Navello Infissi'
+];
+const COLORS = {BiemmeFinestre:'#2d7d46',Internorm:'#0d2b52',Ditec:'#b0306a',Novoferm:'#b8860b',
+  FerreroLegno:'#7a4a1a',Gerflor:'#1a6e9b',Cherubini:'#b3253a','CH-Mimetal':'#4a4a6a',
+  RotoFinestreTetti:'#3b7d5e',NavelloInfissi:'#6b3a7a'};
+const SHORT = {BiemmeFinestre:'BI',Internorm:'IN',Ditec:'DT',Novoferm:'NV',FerreroLegno:'FE',
+  Gerflor:'GF',Cherubini:'CH','CH-Mimetal':'MM',RotoFinestreTetti:'RO',NavelloInfissi:'NV'};
+
+let ncData = JSON.parse(localStorage.getItem('ellesse_nc') || '[]');
+let idxVista = null;
+
+function init() {
+  // Popola select mandanti
+  const selMand = document.getElementById('fMandante');
+  const filMand = document.getElementById('filtroMandante');
+  selMand.innerHTML = MANDANTI.map(m => `<option value="${m}">${m}</option>`).join('');
+  filMand.innerHTML = '<option value="">Tutti i mandanti</option>' + MANDANTI.map(m => `<option value="${m}">${m}</option>`).join('');
+  renderTable();
+}
+
+function salva() {
+  localStorage.setItem('ellesse_nc', JSON.stringify(ncData));
+}
+
+function getNextId() {
+  if (ncData.length === 0) return 1;
+  return Math.max(...ncData.map(n => n.id)) + 1;
+}
+
+function nuovaNC() {
+  document.getElementById('editId').value = '';
+  document.getElementById('modalTitle').textContent = '➕ Nuova Non Conformità';
+  document.getElementById('fPartner').value = '';
+  document.getElementById('fMandante').value = MANDANTI[0];
+  document.getElementById('fOggetto').value = '';
+  document.getElementById('fCommessa').value = '';
+  document.getElementById('fGravita').value = 'Alta';
+  document.getElementById('fStato').value = 'Aperta';
+  document.getElementById('fNote').value = '';
+  document.getElementById('modale').style.display = 'flex';
+}
+
+function salvaNC() {
+  const id = document.getElementById('editId').value;
+  const partner = document.getElementById('fPartner').value.trim();
+  const mandante = document.getElementById('fMandante').value;
+  const oggetto = document.getElementById('fOggetto').value.trim();
+  const commessa = document.getElementById('fCommessa').value.trim();
+  const gravita = document.getElementById('fGravita').value;
+  const stato = document.getElementById('fStato').value;
+  const note = document.getElementById('fNote').value.trim();
+  if (!partner || !oggetto) { alert('Compilare partner e oggetto'); return; }
+  const oggi = new Date().toISOString().split('T')[0];
+  if (id) {
+    const idx = ncData.findIndex(n => n.id == id);
+    if (idx >= 0) {
+      ncData[idx] = {...ncData[idx], partner, mandante, oggetto, commessa, gravita, stato, note};
+    }
+  } else {
+    ncData.push({id: getNextId(), data: oggi, partner, mandante, oggetto, commessa, gravita, stato, note, creato: oggi});
+  }
+  salva();
+  chiudiModale();
+  renderTable();
+}
+
+function renderTable() {
+  const statoF = document.getElementById('filtroStato').value;
+  const mandF = document.getElementById('filtroMandante').value;
+  const gravF = document.getElementById('filtroGravita').value;
+  const testoF = document.getElementById('filtroTesto').value.toLowerCase();
+  let filtri = ncData.filter(n => {
+    if (statoF && n.stato !== statoF) return false;
+    if (mandF && n.mandante !== mandF) return false;
+    if (gravF && n.gravita !== gravF) return false;
+    if (testoF) {
+      const txt = (n.partner + ' ' + n.oggetto + ' ' + n.commessa + ' ' + n.note).toLowerCase();
+      if (!txt.includes(testoF)) return false;
+    }
+    return true;
+  });
+  // Ordina: prima le aperte/in lavorazione, poi per data decrescente
+  filtri.sort((a, b) => {
+    const ord = {Aperta:0, 'In lavorazione':1, Chiusa:2};
+    if (ord[a.stato] !== ord[b.stato]) return ord[a.stato] - ord[b.stato];
+    return b.data.localeCompare(a.data);
+  });
+  const tbody = document.getElementById('tbody');
+  const empty = document.getElementById('empty');
+  if (filtri.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    tbody.innerHTML = filtri.map(n => {
+      const col = COLORS[n.mandante.replace(/ /g,'')] || COLORS[n.mandante] || '#5a6472';
+      const mShort = SHORT[n.mandante.replace(/ /g,'')] || n.mandante.substring(0,4);
+      return `<tr onclick="vediDettaglio(${n.id})" style="cursor:pointer">
+        <td>${n.id}</td>
+        <td><small>${n.data}</small></td>
+        <td>${n.partner}</td>
+        <td><span class="mandante-tag" style="background:${col}">${n.mandante}</span></td>
+        <td>${n.oggetto}${n.commessa ? ' <small>('+n.commessa+')</small>' : ''}</td>
+        <td><span class="badge badge-${n.gravita.toLowerCase()}">${n.gravita}</span></td>
+        <td><span class="badge badge-${n.stato.toLowerCase().replace(' ','')}">${n.stato}</span></td>
+        <td><button class="btn btn-sm btn-danger" onclick="event.stopPropagation();eliminaNC(${n.id})">🗑️</button></td>
+      </tr>`;
+    }).join('');
+  }
+  // Statistiche
+  const tot = ncData.length;
+  const aperte = ncData.filter(n => n.stato === 'Aperta').length;
+  const lav = ncData.filter(n => n.stato === 'In lavorazione').length;
+  const chiuse = ncData.filter(n => n.stato === 'Chiusa').length;
+  document.getElementById('statTot').textContent = tot;
+  document.getElementById('statAperte').textContent = aperte;
+  document.getElementById('statLavorazione').textContent = lav;
+  document.getElementById('statChiuse').textContent = chiuse;
+}
+
+function vediDettaglio(id) {
+  const n = ncData.find(x => x.id === id);
+  if (!n) return;
+  idxVista = id;
+  const col = COLORS[n.mandante.replace(/ /g,'')] || '#5a6472';
+  document.getElementById('detTitle').textContent = '📋 ' + n.oggetto;
+  document.getElementById('detBody').innerHTML = `
+    <div class="detail-grid">
+      <div class="item"><strong>ID:</strong> ${n.id}</div>
+      <div class="item"><strong>Data:</strong> ${n.data}</div>
+      <div class="item"><strong>Partner:</strong> ${n.partner}</div>
+      <div class="item"><strong>Mandante:</strong> <span class="mandante-tag" style="background:${col}">${n.mandante}</span></div>
+      <div class="item"><strong>Commessa:</strong> ${n.commessa || '-'}</div>
+      <div class="item"><strong>Gravità:</strong> <span class="badge badge-${n.gravita.toLowerCase()}">${n.gravita}</span></div>
+      <div class="item"><strong>Stato:</strong> <span class="badge badge-${n.stato.toLowerCase().replace(' ','')}">${n.stato}</span></div>
+      <div class="item"><strong>Creato il:</strong> ${n.creato || n.data}</div>
+    </div>
+    <div style="margin:10px 0;padding:10px;background:#f8fafc;border-radius:6px;border-left:3px solid ${col}">
+      <strong>📝 Descrizione:</strong><br>${n.oggetto}
+    </div>
+    ${n.note ? `<div style="margin:10px 0;padding:10px;background:#fef9e7;border-radius:6px;border-left:3px solid #d4a843"><strong>📌 Note / Azioni:</strong><br>${n.note}</div>` : ''}
+  `;
+  document.getElementById('modaleDettaglio').style.display = 'flex';
+}
+
+function modificaDaDettaglio() {
+  const n = ncData.find(x => x.id === idxVista);
+  if (!n) return;
+  chiudiDettaglio();
+  document.getElementById('editId').value = n.id;
+  document.getElementById('modalTitle').textContent = '✏️ Modifica Non Conformità';
+  document.getElementById('fPartner').value = n.partner;
+  document.getElementById('fMandante').value = n.mandante;
+  document.getElementById('fOggetto').value = n.oggetto;
+  document.getElementById('fCommessa').value = n.commessa || '';
+  document.getElementById('fGravita').value = n.gravita;
+  document.getElementById('fStato').value = n.stato;
+  document.getElementById('fNote').value = n.note || '';
+  document.getElementById('modale').style.display = 'flex';
+}
+
+function eliminaDaDettaglio() {
+  if (confirm('Eliminare questa non conformità?')) {
+    eliminaNC(idxVista);
+    chiudiDettaglio();
+  }
+}
+
+function eliminaNC(id) {
+  if (!confirm('Eliminare la non conformità #' + id + '?')) return;
+  ncData = ncData.filter(n => n.id !== id);
+  salva();
+  renderTable();
+}
+
+function chiudiModale() {
+  document.getElementById('modale').style.display = 'none';
+}
+
+function chiudiDettaglio() {
+  document.getElementById('modaleDettaglio').style.display = 'none';
+  idxVista = null;
+}
+
+// Chiusura modali con Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { chiudiModale(); chiudiDettaglio(); }
+});
+
+function esportaCSV() {
+  if (ncData.length === 0) { alert('Nessuna non conformità da esportare.'); return; }
+  const headers = ['ID','Data','Partner','Mandante','Oggetto','Commessa','Gravità','Stato','Note','Creato il'];
+  const rows = ncData.map(n => [
+    n.id, n.data, `"${n.partner}"`, `"${n.mandante}"`, `"${n.oggetto}"`,
+    `"${n.commessa||''}"`, n.gravita, n.stato, `"${(n.note||'').replace(/"/g,'""')}"`, n.creato||n.data
+  ]);
+  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8;'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'NonConformita_Ellesse_' + new Date().toISOString().split('T')[0] + '.csv';
+  link.click();
+}
+
+function importaCSV() {
+  document.getElementById('fileInput').click();
+}
+
+function caricaCSV(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const text = e.target.result;
+    const lines = text.split('\n').filter(l => l.trim());
+    if (lines.length < 2) { alert('File CSV vuoto'); return; }
+    const intestazioni = lines[0].split(',').map(h => h.trim().replace(/"/g,''));
+    const idxMap = {};
+    ['Data','Partner','Mandante','Oggetto','Commessa','Gravità','Stato','Note','Creato il'].forEach(c => {
+      idxMap[c] = intestazioni.indexOf(c);
+    });
+    let count = 0;
+    lines.slice(1).forEach(line => {
+      const vals = line.split(',').map(v => v.trim().replace(/^"|"$/g,''));
+      if (vals.length < 4) return;
+      const partner = vals[idxMap['Partner']] || '';
+      const mandante = vals[idxMap['Mandante']] || '';
+      const oggetto = vals[idxMap['Oggetto']] || '';
+      if (!partner || !oggetto) return;
+      const id = getNextId();
+      ncData.push({
+        id, data: vals[idxMap['Data']] || new Date().toISOString().split('T')[0],
+        partner, mandante, oggetto, commessa: vals[idxMap['Commessa']] || '',
+        gravita: vals[idxMap['Gravità']] || 'Media',
+        stato: vals[idxMap['Stato']] || 'Aperta',
+        note: vals[idxMap['Note']] || '',
+        creato: vals[idxMap['Creato il']] || new Date().toISOString().split('T')[0]
+      });
+      count++;
+    });
+    salva();
+    renderTable();
+    alert(`✅ Importate ${count} non conformità.`);
+  };
+  reader.readAsText(file, 'UTF-8');
+  event.target.value = '';
+}
+
+// Inizializzazione
+init();
+</script>
+</body>
+</html>
